@@ -30,8 +30,11 @@ little rudely to you in response. It's rude to not use an opener, after all.
 Some examples of openers are the following:
 
 > Can you please ...
+
 > Can you ...
+
 > Please ...
+
 > Would you be a dear and ...
 
 You can add openers if you'd like, and specify whether they are 'rude' or not.
@@ -41,7 +44,9 @@ You can add openers if you'd like, and specify whether they are 'rude' or not.
 A command is simply your request for John. For example, you may ask John to:
 
 > Grab me < items >.
+
 > Take < items > from my inventory.
+
 > Calculate < calculation >
 
 #### Arguments (John-side)
