@@ -52,6 +52,14 @@ about them. Note the more arguments there are, the harder it becomes for John to
 parse them. In most cases, John should understand a comma-seperated list if
 there needs to be multiple arguments.
 
+Arguments wrapped in parenthesis are to be treated exactly like they're shown.
+For example, if you state,
+
+> Hey John, can you give me 32 (cobblestone)?
+
+John will take "cobblestone" literally, and will not try to correct you in any
+way.
+
 #### Overlapping Phrases (John-side)
 
 Sometimes some phrases are very similar. For this reason, John will first think
@@ -194,10 +202,12 @@ methods:
 Each module requires a `spec.lua` file at the root of its folder, which returns
 a table containing the following key-value pairs:
 
-- `patterns: {...: string}`
+- `commands: {...: string}`
   - A table of patterns that this module looks for at the start of every
     command. Don't worry about adding `^` to the start of the pattern, the
-    module loader will to this for you.
+    module loader will to this for you. Remember that the system will pass
+    everything as lowercase strings, you don't need to check for anything
+    uppercase.
 - `name: string`
   - The friendly name of the module. This can be multiple words.
 - `description: string`
@@ -237,6 +247,111 @@ The `run` function is ran by a coroutine handler that will not block other
     so use this only when absolutely needed.
 - `tokenise(value: string): table`
   - Convert the input string into a table of tokens -- words separated by
-    spaces.
+    spaces. Items in quotations will stay together.
+- `levenshtein(s1: string, s2: string): number`
+  - Compare two strings to see how similar they are. Numbers closer to zero are
+    better.
+
+#### Return
+
+Whatever value you return is what will be sent to the user. If you `return nil`,
+a generic message will be sent back stating that nothing has happened. Thus,
+ensure you return something rather than using `say` always.
 
 ### Phrases (code-side)
+
+Phrases are what are used to decide which module the command should be passed
+to. For example, if your module returns the following table of phrases:
+
+```lua
+{
+  "grab me",
+  "grab",
+  "get me",
+  "get",
+  "give me",
+  "give"
+} -- This is what is returned by the inventory module.
+```
+
+The system will first parse out any openers, then parse the rest by running a
+match with every phrase. If multiple phrases match the opener, each module who
+has a matching phrase will have their `test` methods executed with the full
+command. The module that returns the highest certainty factor (0-100) will then
+be `run`.
+
+There isn't much else to say for the code-side about these, other than try to
+keep openers and commands as short and to the point as possible while keeping
+the "human-like" speech pattern so that there is not confusion about usage.
+
+Make sure you take a look at the
+[John-side specifications](#specification-john-side) as well, as some
+information also pertains to how code should act.
+
+#### Commands (code-side)
+
+Commands are tokenised and openers are removed before being passed to the `run`
+function.
+
+#### Arguments (code-side)
+
+Arguments can be specified however you wish to specify them in order to give
+them the most "human-like" speech behaviour. For commands that support multiple
+arguments for the same request, a comma seperated list is recommended, example:
+
+> Hey John, can you get me 32 cobblestone, 12 redstone, 8 iron?
+
+Arguments wrapped in parenthesis are to be treated as "exactly this." For
+example, if the user states,
+
+> Hey John, can you give me 32 (cobblestone)?
+
+Your module should not levenshtein test `cobblestone`, but use it exactly. If
+it's incorrect here, that's the user's fault.
+
+#### Known words (code-side)
+
+See the [John-side known words](#known-words-john-side) for how these work.
+These do not affect the code-side of things other than you should avoid
+requiring them in your commands.
+
+#### Confirmations (code-side)
+
+By calling `confirm` with a message, you can get confirmation from a user about
+what it is they want. For example, if the user asks:
+
+> Hey John, can you get me 32 cob?
+
+And the system has `cobblestone` and `cobbledstone`, the levenshtein distance of
+both these names are close enough together that it may be unknown which one the
+user is asking for. Thus, you'd want to run something like:
+
+```lua
+local result = confirm("Is it cobblestone you want?")
+if not result then
+  return be_specific()
+end
+```
+
+In this case, the system would ask the user "Is it cobblestone you want?",
+listening for their response. If they respond "yes", `result` will be `true`.
+If they respond "no" it will be `false`. All other responses wil result in a
+generic message along the lines of:
+
+> That's not a yes or no...
+
+`return be_specific()` here will send a generic message to the user telling them
+to be more specific in their request.
+
+### Hurt (errors, code-side)
+
+If your module causes an error, the system will not stop, however your module
+may be excluded from being run depending on a few rules.
+
+1. Error ratio. If your module is throwing errors more than it is running
+   without error, then your module will be disabled. Ratio is 5 errors to 2
+   successes. John will say a generic message about not being able to do certain
+   things anymore.
+2. `task` method crashing. It is assumed the `task` is important to the module,
+   so if the `task` method throws an error, the entire module will stop until
+   the system is rebooted.
