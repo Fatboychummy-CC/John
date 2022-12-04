@@ -22,3 +22,9 @@ then respond something like,
 or
 
 > You don't have any cobblestone in your inventory!
+
+## Is John an AI?
+
+No, John is definitely NOT an AI. Unless your module implements some AI stuff,
+he is just a program meant to understand things which are "human-like" in
+speech. It's not perfect, but it looks nice.

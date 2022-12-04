@@ -172,7 +172,8 @@ respond unhappily.
 
 ### Module structure requirements
 
-Each module should be contained within a folder.
+Each module should be contained within a folder. The folder's name is its
+identifier, so name this something short.
 
 #### init.lua
 
@@ -180,13 +181,13 @@ The folder must have an `init.lua` file at its root. This file can be structured
 however you wish it to be structured, however it **must** return the following
 methods:
 
-- `test(message: string): number`
+- `test(message: table): number`
   - `message` is the command given by the user, tokenised.
   - This method is used to determine what module to use in the case that no
     module identifier has been given.
   - The return value should be a number from 0-100 for how sure your module is
     that this message is meant for it.
-- `run(message: string, rude: boolean, command_position: integer?, queue_length: integer?)`
+- `run(message: table, rude: boolean, command_position: integer?, queue_length: integer?)`
   - `message` is the command given by the user, tokenised.
   - `rude` is `false` if the user gave an opener, `true` otherwise.
   - `command_position` is the position in the command queue that this command is
@@ -217,9 +218,6 @@ a table containing the following key-value pairs:
   - The friendly name of the module. This can be multiple words.
 - `description: string`
   - The description of the module.
-- `identifier: string`
-  - The identifier for the module. This must be a single word (though hyphens
-    can be used in place of spaces).
 
 ### Module environment
 
