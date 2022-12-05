@@ -29,3 +29,6 @@ function module.test(message) return 0 end
 ---@field description string The description of this module.
 
 ---@alias specced_module {spec:module_spec,module:module,active:boolean} A specced module.
+
+---@alias module_identifier string The identifier of the module
+---@alias module_name string The name of the module
