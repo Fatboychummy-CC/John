@@ -26,7 +26,6 @@ function module.test(message) return 0 end
 ---@class module_spec
 ---@field commands {[integer]:pattern} The patterns that this module listens for.
 ---@field name string The friendly name of this module.
----@field identifier string The identifier of this module.
 ---@field description string The description of this module.
 
 ---@alias specced_module {spec:module_spec,module:module,active:boolean} A specced module.
