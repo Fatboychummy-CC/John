@@ -52,6 +52,12 @@ function module_handler.load_module(name)
   if not ok then
     return false, "Failed to require module.", loaded_module
   end
+
+  -- Pass the module handler to the core module.
+  if name == "core" then
+    loaded_module.handler = module_handler
+  end
+
   module_data.module = loaded_module
 
   -- Try to load the spec
