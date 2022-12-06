@@ -37,3 +37,18 @@ function module.test(message) return 0 end
 
 ---@alias module_identifier string The identifier of the module
 ---@alias module_name string The name of the module
+
+---@class chat_compat Compatability module for chat system
+---@field setup fun(): ok:boolean, error_message:string? Setup the chat system.
+---@field say fun(message:string, player_name:string) Say something to the user. Should follow silence rules (call tell instead)
+---@field tell fun(message:string, player_name:string) Tell something to the user.
+---@field listen fun(): username:string, message:string Return a message from the user.
+---@field silence fun(silence:boolean) Silence the system.
+---@field silent boolean If the system is silenced.
+---@field prefix string The prefix set by the system. This will be set directly after `setup()` is called, but before any messages are parsed.
+
+---@alias chat_compat_setup fun(): ok:boolean, error_message:string? Setup the chat system.
+---@alias chat_compat_say fun(message:string, player_name:string) Say something to the user. Should follow silence rules (call tell instead)
+---@alias chat_compat_tell fun(message:string, player_name:string) Tell something to the user.
+---@alias chat_compat_listen fun(): username:string, message:string Return a message from the user.
+---@alias chat_compat_silence fun(silence:boolean) Silence the system.

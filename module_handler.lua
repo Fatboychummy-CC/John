@@ -2,6 +2,9 @@ local expect = require "cc.expect".expect
 
 local running_directory = fs.getDir(shell.getRunningProgram())
 
+package.path = package.path .. ";lib/?.lua;lib/?/init.lua"
+require "john_globals" -- initialize the `john` global variable.
+
 ---@class module_handler Handles module interactions.
 ---@field tasks {[integer]:fun()} The loaded tasks.
 ---@field modules {[string]:specced_module} The loaded module identifiers and names.

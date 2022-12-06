@@ -17,4 +17,4 @@ for _, compat in ipairs(compatabilities) do
   end
 end
 
-error(string.format("Failed to start chat module:\n%s", table.concat(issues, "\n")))
+error(string.format("Failed to start chat module:\n%s", table.concat(issues, "\n")), 0)
